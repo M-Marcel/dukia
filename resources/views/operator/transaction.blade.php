@@ -13,7 +13,7 @@
 @section('breadcrumb')
                             <h4 class="page-title">User Transaction</h4>
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript:void(0);">Transaction Dashboard</a></li>                                
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Dashboard</a></li>                                
                                 <li class="breadcrumb-item active">Transaction Tables</li>
                             </ol>
 @endsection
@@ -29,7 +29,7 @@
                                 <h4 class="mt-0 header-title">Transaction Table</h4>
                                 <p class="text-muted m-b-30 font-14">The above tabe shows all the Users transaction datas.
                                 </p>
-                                <button type="button" class="btn btn-primary float-right waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-lg"><a style="color:beige;" >Add Admin</a></button><br><br>
+                                {{-- <button type="button" class="btn btn-primary float-right waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-lg"><a style="color:beige;" >Add Admin</a></button><br><br> --}}
 
                                 <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
@@ -102,10 +102,11 @@
                                 <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
                                         <tr>
-                                            <th>User ID</th>                                            
-                                            <th>Location Name</th>
-                                            <th>Address</th>
-                                            <th>Contact</th>
+                                            <th>S/N</th>
+                                            <th>Transaction ID</th>
+                                            <th>User ID</th>                                                                                       
+                                            <th>Box ID</th>                                            
+                                            <th>Date/Time</th>
                                             <th>Status</th>
                                             <th>Action</th>                                                                               
                                         </tr>
@@ -116,16 +117,39 @@
                                         <tr>
                                             
                                             <td>{{$d->id}}</td>
-                                            <td>{{$d-> location_name}}</td>
-                                            <td>{{$d->address}}</td>
-                                            <td>{{$d->contact_no}}</td>                                    
-                                            @if ($d->status == "active")
-                                            <td><span class="badge badge-pill badge-success">{{$d->status}}</span></td>
-                                            @else
+                                            @if ($d->status == 'open')
+                                            <td><a href="{{ route('editTrans', $d->id)}}"><i class="mdi mdi-checkbox-blank-circle text-danger"></i> {{$d->transaction_id}}</a></td>
+                                            @endif
+                                            @if ($d->status == 'cost')
+                                            <td><a href="{{ route('editTrans', $d->id)}}"><i class="mdi mdi-checkbox-blank-circle text-success"></i> {{$d->transaction_id}}</a></td>
+                                            @endif
+                                            @if ($d->status == 'checking')
+                                            <td><a href="{{ route('editTrans', $d->id)}}"><i class="mdi mdi-checkbox-blank-circle text-warning"></i> {{$d->transaction_id}}</a></td>
+                                            @endif
+                                            @if ($d->status == 'confirmed')
+                                            <td><a href="{{ route('editTrans', $d->id)}}"><i class="mdi mdi-checkbox-blank-circle text-primary"></i> {{$d->transaction_id}}</a></td> 
+                                            @endif
+                                            
+                                            {{-- <td>{{$d->first_name}} {{$d->last_name}}</td> --}}
+                                            <td>{{$d->user_id}}</td>
+                                            <td>{{$d->box_id}}</td>  
+                                            <td>{{$d->created_at}}</td>  
+                                            
+                                            @if ($d->status == 'open')
                                             <td><span class="badge badge-pill badge-danger">{{$d->status}}</span></td>
                                             @endif
-                                            <td><button type="button" class="btn btn-secondary btn-sm waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-update-{{$d->id}}"> <a style="color:beige;"><i class="fas fa-user-alt-slash"></i></a></button>
-                                                <button type="button" class="btn btn-secondary btn-sm waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-edit-{{$d->id}}"> <a style="color:beige;"><i class="fas fa-user-edit"></i></a></button> 
+                                            @if ($d->status == 'cost')
+                                            <td><span class="badge badge-pill badge-success">{{$d->status}}</span></td>
+                                            @endif
+                                            @if ($d->status == 'checking')
+                                            <td><span class="badge badge-pill badge-warning">{{$d->status}}</span></td>
+                                            @endif
+                                            @if ($d->status == 'confirmed')
+                                            <td><span class="badge badge-pill badge-primary">{{$d->status}}</span></td> 
+                                            @endif                                           
+                                            <td>
+                                                {{-- <button type="button" class="btn btn-secondary btn-sm waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-update-{{$d->id}}"> <a style="color:beige;"><i class="fas fa-user-alt-slash"></i></a></button> --}}
+                                                <button type="button" class="btn btn-secondary btn-sm waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-edit-{{$d->id}}"> <a href="{{ route('editTrans', $d->id)}}" style="color:beige;"><i class="fas fa-user-edit"></i></a></button> 
                                                 <button type="button" class="btn btn-secondary btn-sm waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-delete-{{$d->id}}"> <a style="color:beige;"><i class="fas fa-user-times"></i></a></button>    
                                                 
                                             </td>
@@ -143,7 +167,7 @@
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-primary waves-effect waves-light"><a style="color:beige;" href="{{ route('updateCenter', $d->id)}}"><i class="fas fa-user-alt-slash"></i>Continue</a></button>
+                                                                <button type="button" class="btn btn-primary waves-effect waves-light"><a style="color:beige;" href="{{ route('updateTrans', $d->id)}}"><i class="fas fa-user-alt-slash"></i>Continue</a></button>
                                                             </div>
                                                 </div><!-- /.modal-content -->
                                             </div><!-- /.modal-dialog -->
@@ -161,13 +185,13 @@
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-primary waves-effect waves-light"><a style="color:beige;" href="{{ route('deleteCenter', $d->id)}}"><i class="fas fa-user-alt-slash"></i>Delete</a></button>
+                                                                <button type="button" class="btn btn-primary waves-effect waves-light"><a style="color:beige;" href="{{ route('deleteTrans', $d->id)}}"><i class="fas fa-user-alt-slash"></i>Delete</a></button>
                                                             </div>
                                                     </div><!-- /.modal-content -->
                                                 </div><!-- /.modal-dialog -->
                                             </div><!-- /.modal -->
 
-                                            <div class="modal fade bs-example-modal-edit-{{$d->id}}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                                            {{-- <div class="modal fade bs-example-modal-edit-{{$d->id}}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
@@ -230,7 +254,7 @@
                                                                 </div>                                                                
                                                     </div><!-- /.modal-content -->
                                                 </div><!-- /.modal-dialog -->
-                                            </div><!-- /.modal -->
+                                            </div><!-- /.modal --> --}}
                                         @endforeach 
                                         </tbody>
                                 </table>                               

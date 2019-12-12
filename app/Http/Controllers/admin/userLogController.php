@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use App\User;
 
 class userLogController extends Controller
@@ -16,46 +17,56 @@ class userLogController extends Controller
     public function index()
     {
         switch(auth()->user()->role_id){
-            // case '1':  
-            // return view('admin.index');
+            // case '1': return view('admin.index');
             // break;
 
-            case '2':  
-            return view('operator.index');
+            // case '2': return view('admin.index');
+            // break;
+
+            // case '3': return view('admin.index');
+            // break;
+
+            case '4': return view('operator.index');
             break;
 
-            case '3':  
-            return view('payer.index');
+            case '5': return view('vault.index');
             break;
 
-            case '4':  
-            return view('logistics.index');
+            case '6': return view('payer.index');
+            break;            
+
+            case '7': return view('logistics.index');
             break;
 
-            case '5':  
-            return view('proccess.index');
+            case '8': return view('process.index');
             break;
 
-            case '6':  
-            return view('equip.index');
-            break;
+            case '9': return view('equip.index');
+            break;  
 
-            case '7':  
-            return view('vault.index');
-            break;
+            case '10': return view('lab.index');
+            break; 
+            
+            case '11': return view('loan.index');
+            break;  
 
-            // default: 
-            // return view('app.login');
+            // default: return view('welcome');
             // break;
         }
 
-        $user = new User;
-        $users = $user::orderBy('id')->join('role', 'users.role','=','role.id')                                    
-                                    ->select('users.*','role.role_name')
-                                    ->paginate(8);
-                                     return view('admin.userLog')->with('data', $users);
-    }
+        $alluser = User::count();
+        $actuser = User::where('status','=','active')->count();
+        $sususer = User::where('status','=','suspended')->count();
+        $newuser = User::where('status','=','new')->count();
 
+        $user = new User;
+        $users = $user::orderBy('id')
+                                     ->select('users.*')
+                                    ->paginate();
+                                    return view('admin.userLog', ['data'=> $users, 'count1'=> $alluser, 'count2'=> $actuser, 'count3'=> $sususer, 'count4'=> $newuser]);
+                                     
+    }
+  
     /**
      * Show the form for creating a new resource.
      *
@@ -85,7 +96,17 @@ class userLogController extends Controller
      */
     public function show($id)
     {
-        //
+        $alluser = User::count();
+        $actuser = User::where('status','=','active')->count();
+        $sususer = User::where('status','=','suspended')->count();
+        $newuser = User::where('status','=','new')->count();
+
+        $user = new User;
+        $users = $user::orderBy('id')
+                                     ->select('users.*')
+                                     ->where('users.id', '=', $id)
+                                    ->paginate();
+                                    return view('admin.viewuser', ['data'=> $users, 'count1'=> $alluser, 'count2'=> $actuser, 'count3'=> $sususer, 'count4'=> $newuser]);
     }
 
     /**

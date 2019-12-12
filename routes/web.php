@@ -12,8 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('auth.login');
+    return view('welcome');
 });
+Route::get('/home', 'HomeController@index')->name('admin');
 
 Auth::routes();
 
@@ -23,7 +24,7 @@ Auth::routes();
     Route::get('/update-Admin/{id}', 'admin\adminLogController@update')->name('updateAdmin');
     Route::POST('/edit-Admin', 'admin\adminLogController@updateadmin')->name('editAdmin');
     Route::get('/delete-Admin/{id}', 'admin\adminLogController@destroy')->name('deleteAdmin');
-    Route::POST('/add-Role', 'admin\adminLogController@store')->name('adminRole');
+    Route::POST('/add-admin', 'admin\adminLogController@store')->name('addAdmin');
 
     //Buying Center
     Route::get('/center', 'admin\centerController@index')->name('center');
@@ -34,6 +35,7 @@ Auth::routes();
 
     //Users
     Route::resource('/userLog', 'admin\userLogController@index');
+    Route::get('/view-User/{id}', 'admin\userLogController@show')->name('viewUser');
     Route::get('/edit-User/{id}', 'admin\userLogController@update')->name('updateUser');
     Route::get('/delete-User/{id}', 'admin\userLogController@destroy')->name('deleteUser');
     
@@ -49,9 +51,10 @@ Route::get('/operator', 'buyer\buyerController@index')->name('buyer');
 
     //New Transaction
     Route::get('/transaction', 'buyer\transactionController@index')->name('transaction');
-    Route::get('/update-transaction/{id}', 'buyer\transactionController@update')->name('updatetransaction');
-    Route::POST('/edit-transaction', 'buyer\transactionController@updatecenter')->name('edittransaction');
-    Route::get('/delete-transaction/{id}', 'buyer\transactionController@destroy')->name('deletetransaction');
+    Route::get('/update-transaction/{id}', 'buyer\transactionController@update')->name('updateTrans');
+    Route::get('/edit-transaction/{id}', 'buyer\transactionController@edit')->name('editTrans');
+    Route::POST('/add-xrf', 'buyer\transactionController@updatexrf')->name('addXrf');
+    Route::get('/delete-transaction/{id}', 'buyer\transactionController@destroy')->name('deleteTrans');
     Route::POST('/add-transaction', 'buyer\transactionController@store')->name('addtransaction');
 
     //New box
